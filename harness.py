@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any, Callable
 
 import lancedb
+import os
+os.environ["FASTEMBED_CACHE_DIR"] = "/tmp/fastembed_cache"
 from fastembed import TextEmbedding
 from groq import Groq
 from pydantic import BaseModel, Field

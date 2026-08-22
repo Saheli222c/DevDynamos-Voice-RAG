@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 
 import lancedb
+import os
+os.environ["FASTEMBED_CACHE_DIR"] = "/tmp/fastembed_cache"
 from fastembed import TextEmbedding
 
 
