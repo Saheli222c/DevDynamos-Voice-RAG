@@ -1,0 +1,11 @@
+datasets
+lancedb
+fastembed
+pydantic
+groq
+fastapi
+uvicorn
+requests
+python-multipart
+numpy
+python-dotenv

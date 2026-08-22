@@ -1,0 +1,1984 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>DevDynamos Voice RAG</title>
+
+  <style>
+    /* =========================================================
+      DEVDYNAMOS VOICE RAG
+       Premium Hackathon Dashboard UI
+       ========================================================= */
+
+    :root {
+      --bg: #050b16;
+      --bg-soft: #081426;
+      --panel: rgba(10, 25, 45, 0.78);
+      --panel-2: rgba(14, 31, 54, 0.82);
+
+      --blue: #38bdf8;
+      --cyan: #22d3ee;
+      --purple: #8b5cf6;
+      --violet: #6366f1;
+
+      --green: #22c55e;
+      --red: #ef4444;
+      --orange: #f97316;
+
+      --white: #f8fafc;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+
+      --border: rgba(148, 163, 184, 0.14);
+      --border-light: rgba(56, 189, 248, 0.22);
+
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--white);
+
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(56, 189, 248, 0.13),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 90% 5%,
+          rgba(139, 92, 246, 0.15),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 50% 100%,
+          rgba(34, 211, 238, 0.07),
+          transparent 35%
+        ),
+        linear-gradient(
+          135deg,
+          #030712 0%,
+          #071426 50%,
+          #081426 100%
+        );
+
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+
+    body::before {
+      content: "";
+
+      position: fixed;
+      inset: 0;
+
+      pointer-events: none;
+      z-index: -2;
+
+      background:
+        linear-gradient(
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        );
+
+      background-size: 44px 44px;
+
+      mask-image:
+        linear-gradient(
+          to bottom,
+          black 0%,
+          rgba(0,0,0,.5) 55%,
+          transparent 100%
+        );
+    }
+
+    /* Glow */
+
+    body::after {
+      content: "";
+
+      position: fixed;
+
+      width: 420px;
+      height: 420px;
+
+      top: 20%;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(56,189,248,.055),
+          transparent 68%
+        );
+
+      pointer-events: none;
+
+      z-index: -1;
+    }
+
+    /* =========================================================
+       MAIN
+       ========================================================= */
+
+    .shell {
+      width: min(1220px, 92%);
+      margin: auto;
+
+      padding:
+        24px
+        0
+        60px;
+    }
+
+    /* =========================================================
+       TOP BAR
+       ========================================================= */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 14px 18px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 18px;
+
+      background:
+        rgba(5, 15, 28, 0.72);
+
+      backdrop-filter: blur(20px);
+
+      box-shadow:
+        0 15px 50px rgba(0,0,0,.2);
+
+      position: relative;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      padding: 0;
+
+      color: white;
+
+      background: transparent;
+
+      border: 0;
+
+      box-shadow: none;
+
+      font:
+        800
+        20px
+        Arial,
+        sans-serif;
+
+      letter-spacing: .02em;
+
+      text-transform: none;
+    }
+
+    .brand::before {
+      content: "✦";
+
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      color: white;
+
+      font-size: 19px;
+
+      box-shadow:
+        0 8px 25px
+        rgba(56,189,248,.25);
+    }
+
+    .edition {
+      min-width: auto;
+
+      height: auto;
+
+      padding: 9px 14px;
+
+      background:
+        rgba(56,189,248,.07);
+
+      color: #bae6fd;
+
+      font:
+        600
+        11px
+        monospace;
+
+      letter-spacing: .08em;
+
+      text-transform: uppercase;
+
+      clip-path: none;
+
+      border:
+        1px solid
+        rgba(56,189,248,.2);
+
+      border-radius: 10px;
+    }
+
+    .edition::after {
+      display: none;
+    }
+
+    /* Online indicator */
+
+    .topbar::after {
+      content: "●  SYSTEM ONLINE";
+
+      position: absolute;
+
+      right: 155px;
+
+      font:
+        600
+        9px
+        monospace;
+
+      letter-spacing: .08em;
+
+      color: #86efac;
+
+      opacity: .85;
+    }
+
+    /* =========================================================
+       HERO
+       ========================================================= */
+
+    .hero {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        330px;
+
+      gap: 70px;
+
+      align-items: center;
+
+      padding:
+        90px
+        0
+        75px;
+    }
+
+    .label {
+      font:
+        700
+        11px
+        monospace;
+
+      text-transform: uppercase;
+
+      letter-spacing: .16em;
+
+      color: var(--blue);
+    }
+
+    .hero-label {
+      display: inline-flex;
+
+      align-items: center;
+
+      padding:
+        8px
+        14px;
+
+      background:
+        rgba(56,189,248,.08);
+
+      color:
+        #7dd3fc;
+
+      border:
+        1px solid
+        rgba(56,189,248,.2);
+
+      border-radius: 30px;
+
+      clip-path: none;
+
+      box-shadow:
+        0 0 25px
+        rgba(56,189,248,.06);
+    }
+
+    h1 {
+      max-width: 780px;
+
+      margin:
+        22px
+        0
+        25px;
+
+      font:
+        750
+        clamp(3.2rem, 7vw, 6.7rem)
+        /.92
+        Arial,
+        sans-serif;
+
+      letter-spacing:
+        -.06em;
+    }
+
+    h1 em {
+      font-style: normal;
+
+      color: transparent;
+
+      background:
+        linear-gradient(
+          90deg,
+          #38bdf8,
+          #6366f1,
+          #a78bfa
+        );
+
+      background-clip: text;
+
+      -webkit-background-clip: text;
+    }
+
+    .intro {
+      display: block;
+
+      max-width: 650px;
+
+      padding: 0;
+
+      margin: 0;
+
+      background: transparent;
+
+      color: var(--muted);
+
+      font-size: 17px;
+
+      line-height: 1.75;
+
+      clip-path: none;
+    }
+
+    /* =========================================================
+       HOW IT WORKS
+       ========================================================= */
+
+    .signal {
+      position: relative;
+
+      min-height: 230px;
+
+      padding: 32px 27px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(56,189,248,.08),
+          rgba(139,92,246,.1)
+        );
+
+      color: var(--text);
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 22px;
+
+      box-shadow:
+        var(--shadow),
+        inset
+        0 1px 0
+        rgba(255,255,255,.04);
+
+      transform: none;
+
+      font:
+        400
+        14px/1.7
+        Arial,
+        sans-serif;
+
+      text-align: left;
+
+      backdrop-filter: blur(18px);
+    }
+
+    .signal::before {
+      content: "";
+
+      position: absolute;
+
+      top: 25px;
+      right: 25px;
+
+      width: 9px;
+      height: 9px;
+
+      background:
+        var(--green);
+
+      border-radius: 50%;
+
+      box-shadow:
+        0 0 15px
+        rgba(34,197,94,.8);
+    }
+
+    .signal strong {
+      display: block;
+
+      padding-bottom: 15px;
+
+      margin-bottom: 16px;
+
+      border-bottom:
+        1px solid
+        var(--border);
+
+      color: white;
+
+      font:
+        700
+        13px
+        monospace;
+
+      text-transform: uppercase;
+
+      letter-spacing: .1em;
+    }
+
+    .signal span {
+      display: block;
+
+      color:
+        var(--muted);
+    }
+
+    /* =========================================================
+       WORKSPACE
+       ========================================================= */
+
+    .workspace {
+      display: grid;
+
+      grid-template-columns:
+        320px
+        minmax(0, 1fr);
+
+      gap: 28px;
+
+      align-items: stretch;
+    }
+
+    /* =========================================================
+       VOICE CARD
+       ========================================================= */
+
+    .record-box {
+      position: relative;
+
+      min-height: 370px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: space-between;
+
+      padding: 30px;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(14,38,64,.92),
+          rgba(11,27,49,.92)
+        );
+
+      color: var(--text);
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 23px;
+
+      box-shadow:
+        var(--shadow),
+        inset
+        0 1px 0
+        rgba(255,255,255,.04);
+
+      backdrop-filter: blur(20px);
+    }
+
+    .record-box::before {
+      content: "";
+
+      position: absolute;
+
+      width: 250px;
+      height: 250px;
+
+      right: -130px;
+      bottom: -120px;
+
+      border:
+        1px solid
+        rgba(56,189,248,.14);
+
+      border-radius: 50%;
+
+      box-shadow:
+        0 0 0 25px
+        rgba(56,189,248,.035),
+
+        0 0 0 50px
+        rgba(56,189,248,.02);
+    }
+
+    .record-box::after {
+      content: "";
+
+      position: absolute;
+
+      width: 6px;
+      height: 6px;
+
+      top: 30px;
+      right: 30px;
+
+      background:
+        var(--cyan);
+
+      border-radius: 50%;
+
+      box-shadow:
+        0 0 18px
+        var(--cyan);
+    }
+
+    .record-label {
+      color: var(--blue);
+    }
+
+    .mic-row {
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: flex-start;
+
+      gap: 18px;
+
+      position: relative;
+
+      z-index: 1;
+    }
+
+    /* =========================================================
+       MICROPHONE BUTTON
+       ========================================================= */
+
+    .record {
+      position: relative;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 112px;
+      height: 112px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #38bdf8,
+          #6366f1 60%,
+          #8b5cf6
+        );
+
+      color: white;
+
+      border: 0;
+
+      border-radius: 27px;
+
+      font-size: 0;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 18px 40px
+        rgba(56,189,248,.18),
+
+        0 10px 30px
+        rgba(99,102,241,.18);
+
+      transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .record::before {
+      content: "";
+
+      width: 25px;
+      height: 36px;
+
+      background: white;
+
+      border-radius: 15px;
+
+      box-shadow:
+        0 0 0 7px
+        rgba(255,255,255,.08);
+    }
+
+    .record::after {
+      content: "";
+
+      position: absolute;
+
+      width: 42px;
+      height: 25px;
+
+      bottom: 25px;
+
+      border:
+        3px solid
+        white;
+
+      border-top: 0;
+
+      border-radius:
+        0
+        0
+        25px
+        25px;
+    }
+
+    .record:hover {
+      transform:
+        translateY(-5px)
+        scale(1.03);
+
+      box-shadow:
+        0 25px 55px
+        rgba(56,189,248,.25),
+
+        0 18px 40px
+        rgba(99,102,241,.22);
+    }
+
+    .record:active {
+      transform:
+        scale(.97);
+    }
+
+    /* Recording state */
+
+    .record.recording {
+      background:
+        linear-gradient(
+          135deg,
+          #ef4444,
+          #f97316
+        );
+
+      animation:
+        recordingPulse
+        1.4s
+        infinite;
+    }
+
+    .record.recording::before {
+      width: 27px;
+      height: 27px;
+
+      border-radius: 6px;
+    }
+
+    .record.recording::after {
+      display: none;
+    }
+
+    @keyframes recordingPulse {
+
+      0% {
+        box-shadow:
+          0 0 0 0
+          rgba(239,68,68,.55);
+      }
+
+      70% {
+        box-shadow:
+          0 0 0 22px
+          rgba(239,68,68,0);
+      }
+
+      100% {
+        box-shadow:
+          0 0 0 0
+          rgba(239,68,68,0);
+      }
+
+    }
+
+    /* Status */
+
+    .status {
+      max-width: 240px;
+
+      padding:
+        7px
+        11px;
+
+      color:
+        #bae6fd;
+
+      background:
+        rgba(56,189,248,.06);
+
+      border:
+        1px solid
+        rgba(56,189,248,.14);
+
+      border-radius: 8px;
+
+      font:
+        600
+        11px
+        monospace;
+
+      text-transform: uppercase;
+
+      letter-spacing: .08em;
+
+      overflow-wrap:
+        anywhere;
+    }
+
+    .hint {
+      position: relative;
+
+      z-index: 1;
+
+      max-width: 245px;
+
+      margin: 0;
+
+      color:
+        var(--muted);
+
+      font:
+        13px/1.65
+        Arial,
+        sans-serif;
+    }
+
+    /* =========================================================
+       RESULT PANEL
+       ========================================================= */
+
+    .panel {
+      padding:
+        30px
+        32px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(12,29,50,.88),
+          rgba(8,22,39,.9)
+        );
+
+      color:
+        var(--text);
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius:
+        23px;
+
+      box-shadow:
+        var(--shadow),
+
+        inset
+        0 1px 0
+        rgba(255,255,255,.035);
+
+      backdrop-filter:
+        blur(20px);
+    }
+
+    .panel .label {
+      color:
+        var(--blue);
+
+      text-shadow:
+        none;
+    }
+
+    .field {
+      padding:
+        0
+        0
+        28px;
+
+      margin-bottom:
+        28px;
+
+      border-bottom:
+        1px solid
+        var(--border);
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+
+      padding-bottom: 0;
+
+      border-bottom: 0;
+    }
+
+    .field p {
+      margin:
+        14px
+        0
+        0;
+
+      color:
+        var(--text);
+
+      text-shadow:
+        none;
+    }
+
+    .transcript {
+      min-height: 45px;
+
+      color:
+        #cbd5e1;
+
+      font:
+        400
+        clamp(1.1rem, 2.2vw, 1.55rem)
+        /1.5
+        Arial,
+        sans-serif;
+    }
+
+    .answer {
+      min-height: 115px;
+
+      max-width: 800px;
+
+      color:
+        #ffffff;
+
+      font:
+        400
+        clamp(1.35rem, 2.8vw, 2.25rem)
+        /1.35
+        Arial,
+        sans-serif;
+    }
+
+    .latency {
+      min-height: 22px;
+
+      margin-bottom: 0;
+
+      color:
+        var(--muted);
+
+      font:
+        12px/1.8
+        monospace;
+
+      white-space:
+        pre-wrap;
+    }
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .footer {
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      margin-top:
+        70px;
+
+      padding-top:
+        22px;
+
+      border-top:
+        1px solid
+        var(--border);
+
+      color:
+        #64748b;
+
+      font:
+        600
+        10px
+        monospace;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        .1em;
+    }
+
+    .footer span:first-child,
+    .footer span:last-child {
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      min-height:
+        auto;
+
+      padding:
+        0;
+
+      background:
+        transparent;
+
+      color:
+        #64748b;
+
+      font-weight:
+        600;
+
+      border:
+        0;
+
+      clip-path:
+        none;
+    }
+
+    .footer span:first-child::after,
+    .footer span:last-child::after {
+      display:
+        none;
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .topbar::after {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns:
+          1fr;
+
+        gap:
+          35px;
+
+        padding:
+          65px
+          0
+          55px;
+      }
+
+      .signal {
+        min-height:
+          auto;
+      }
+
+      .workspace {
+        grid-template-columns:
+          1fr;
+      }
+
+      .record-box {
+        min-height:
+          330px;
+      }
+    }
+
+    @media (max-width: 720px) {
+
+      .shell {
+        width:
+          94%;
+
+        padding:
+          16px
+          0
+          40px;
+      }
+
+      .topbar {
+        padding:
+          12px
+          14px;
+      }
+
+      .brand {
+        font-size:
+          17px;
+      }
+
+      .brand::before {
+        width:
+          36px;
+
+        height:
+          36px;
+      }
+
+      .edition {
+        display:
+          none;
+      }
+
+      .hero {
+        display:
+          block;
+
+        padding:
+          55px
+          0
+          45px;
+      }
+
+      h1 {
+        font-size:
+          clamp(
+            3rem,
+            15vw,
+            5rem
+          );
+      }
+
+      .intro {
+        font-size:
+          15px;
+      }
+
+      .signal {
+        margin-top:
+          35px;
+      }
+
+      .workspace {
+        display:
+          block;
+      }
+
+      .record-box {
+        min-height:
+          300px;
+
+        margin-bottom:
+          24px;
+      }
+
+      .panel {
+        padding:
+          23px;
+      }
+
+      .footer {
+        margin-top:
+          45px;
+
+        gap:
+          15px;
+
+        flex-wrap:
+          wrap;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <main class="shell">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="topbar">
+
+      <div class="brand">
+        DevDynamos
+      </div>
+
+      <div class="edition">
+        Archive / 001
+        &nbsp;•&nbsp;
+        Voice Interface
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <section class="hero">
+
+      <div>
+
+        <div class="label hero-label">
+          Neural Voice Knowledge Base
+        </div>
+
+        <h1>
+          Speak, retrieve
+          <em>and learn.</em>
+        </h1>
+
+        <p class="intro">
+          Query indexed documents in real time with
+          voice-powered retrieval, intelligent responses,
+          and grounded knowledge from your archive.
+        </p>
+
+      </div>
+
+
+      <aside class="signal">
+
+        <strong>
+          How it works
+        </strong>
+
+        <span>
+          Speak a question. DevDynamos listens,
+          converts your voice into text, searches
+          the knowledge archive, and returns a
+          grounded response.
+        </span>
+
+      </aside>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN WORKSPACE
+         ===================================================== -->
+
+    <section class="workspace">
+
+
+      <!-- ===================================================
+           VOICE QUERY CARD
+           =================================================== -->
+
+      <div class="record-box">
+
+        <div class="label record-label">
+          Voice Query
+        </div>
+
+
+        <div class="mic-row">
+
+          <button
+            id="mic"
+            class="record"
+            title="Start recording"
+            aria-label="Start recording">
+          </button>
+
+
+          <span
+            id="status"
+            class="status">
+            Ready to listen
+          </span>
+
+        </div>
+
+
+        <p class="hint">
+          Tap the microphone, ask your question
+          naturally, then tap again to send it
+          to the RAG pipeline.
+        </p>
+
+      </div>
+
+
+      <!-- ===================================================
+           RESPONSE PANEL
+           =================================================== -->
+
+      <section class="panel">
+
+
+        <!-- TRANSCRIPT -->
+
+        <div class="field">
+
+          <div class="label">
+            Transcript
+          </div>
+
+          <p
+            id="transcript"
+            class="transcript">
+            Your question will appear here.
+          </p>
+
+        </div>
+
+
+        <!-- ANSWER -->
+
+        <div class="field">
+
+          <div class="label">
+            Answer
+          </div>
+
+          <p
+            id="answer"
+            class="answer">
+            Grounded answers will appear here.
+          </p>
+
+        </div>
+
+
+        <!-- PIPELINE TIMING -->
+
+        <div class="field">
+
+          <div class="label">
+            Pipeline Timing
+          </div>
+
+          <p
+            id="latency"
+            class="latency">
+            --
+          </p>
+
+        </div>
+
+
+      </section>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+
+      <span>
+        DevDynamos Research Studio
+      </span>
+
+      <span>
+        Grounded in the archive
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <!-- =======================================================
+       JAVASCRIPT
+       VOICE RECORDING + API
+       ======================================================= -->
+
+  <script>
+
+    const mic =
+      document.querySelector('#mic');
+
+    const status =
+      document.querySelector('#status');
+
+    let audioContext;
+    let source;
+    let processor;
+    let stream;
+    let samples = [];
+
+
+    /* =====================================================
+       DOWNSAMPLE AUDIO
+       ===================================================== */
+
+    function downsample(
+      input,
+      inputRate,
+      outputRate
+    ) {
+
+      if (
+        inputRate === outputRate
+      ) {
+        return input;
+      }
+
+      const ratio =
+        inputRate / outputRate;
+
+      const output =
+        new Float32Array(
+          Math.round(
+            input.length / ratio
+          )
+        );
+
+      for (
+        let index = 0;
+        index < output.length;
+        index++
+      ) {
+
+        const start =
+          Math.floor(
+            index * ratio
+          );
+
+        const end =
+          Math.min(
+            Math.floor(
+              (index + 1) * ratio
+            ),
+            input.length
+          );
+
+        let total = 0;
+
+        for (
+          let sample = start;
+          sample < end;
+          sample++
+        ) {
+
+          total +=
+            input[sample];
+
+        }
+
+        output[index] =
+          total /
+          Math.max(
+            1,
+            end - start
+          );
+
+      }
+
+      return output;
+    }
+
+
+    /* =====================================================
+       CREATE WAV
+       ===================================================== */
+
+    function wavBlob(
+      input,
+      inputRate
+    ) {
+
+      const pcm =
+        downsample(
+          input,
+          inputRate,
+          16000
+        );
+
+      const buffer =
+        new ArrayBuffer(
+          44 + pcm.length * 2
+        );
+
+      const view =
+        new DataView(buffer);
+
+
+      const text =
+        (offset, value) =>
+          [...value].forEach(
+            (character, index) =>
+              view.setUint8(
+                offset + index,
+                character.charCodeAt(0)
+              )
+          );
+
+
+      text(0, 'RIFF');
+
+      view.setUint32(
+        4,
+        36 + pcm.length * 2,
+        true
+      );
+
+      text(8, 'WAVE');
+
+      text(12, 'fmt ');
+
+
+      view.setUint32(
+        16,
+        16,
+        true
+      );
+
+      view.setUint16(
+        20,
+        1,
+        true
+      );
+
+      view.setUint16(
+        22,
+        1,
+        true
+      );
+
+      view.setUint32(
+        24,
+        16000,
+        true
+      );
+
+      view.setUint32(
+        28,
+        32000,
+        true
+      );
+
+      view.setUint16(
+        32,
+        2,
+        true
+      );
+
+      view.setUint16(
+        34,
+        16,
+        true
+      );
+
+
+      text(36, 'data');
+
+
+      view.setUint32(
+        40,
+        pcm.length * 2,
+        true
+      );
+
+
+      pcm.forEach(
+        (sample, index) => {
+
+          view.setInt16(
+            44 + index * 2,
+
+            Math.max(
+              -1,
+              Math.min(
+                1,
+                sample
+              )
+            ) * 0x7fff,
+
+            true
+          );
+
+        }
+      );
+
+
+      return new Blob(
+        [view],
+        {
+          type:
+            'audio/wav'
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       SUBMIT VOICE
+       ===================================================== */
+
+    async function submit() {
+
+      const input =
+        new Float32Array(
+          samples.reduce(
+            (all, part) =>
+              all.concat([...part]),
+            []
+          )
+        );
+
+
+      const body =
+        new FormData();
+
+
+      body.append(
+        'audio',
+        wavBlob(
+          input,
+          recordingRate
+        ),
+        'question.wav'
+      );
+
+
+      status.textContent =
+        'processing';
+
+
+      try {
+
+        const response =
+          await fetch(
+            '/api/voice-rag',
+            {
+              method: 'POST',
+              body
+            }
+          );
+
+
+        /* =================================================
+           HTTP ERROR
+           ================================================= */
+
+        if (!response.ok) {
+
+          const text =
+            await response.text();
+
+          let detail =
+            `Request failed (${response.status})`;
+
+
+          try {
+
+            const errorData =
+              JSON.parse(text);
+
+            detail =
+              errorData.detail ||
+              detail;
+
+          } catch (_) {
+
+            if (text) {
+              detail =
+                text.slice(
+                  0,
+                  160
+                );
+            }
+
+          }
+
+
+          throw Error(detail);
+
+        }
+
+
+        /* =================================================
+           RESPONSE JSON
+           ================================================= */
+
+        const data =
+          await response.json();
+
+
+        /* =================================================
+           BACKEND PIPELINE RESULT
+           ================================================= */
+
+        if (data.result) {
+
+          document
+            .querySelector('#transcript')
+            .textContent =
+              data.transcript ||
+              'Error processing voice request';
+
+
+          document
+            .querySelector('#answer')
+            .textContent =
+              data.result.answer ||
+              data.result.message ||
+              'An error occurred during pipeline execution.';
+
+
+          /*
+             FIX:
+
+             Previously the code used:
+
+             Object.entries(data.latencies)
+
+             If data.latencies was undefined,
+             JavaScript crashed with:
+
+             Cannot convert undefined or null to object
+          */
+
+          const latencyData =
+            data.latencies ||
+            data.latency_ms ||
+            {};
+
+
+          document
+            .querySelector('#latency')
+            .textContent =
+              Object.entries(
+                latencyData
+              )
+              .map(
+                ([key, value]) =>
+                  `${key}: ${value} ms`
+              )
+              .join('\n') ||
+              '--';
+
+
+          status.textContent =
+            'error';
+
+          return;
+
+        }
+
+
+        /* =================================================
+           NORMAL SUCCESS RESPONSE
+           ================================================= */
+
+        document
+          .querySelector('#transcript')
+          .textContent =
+            data.transcript ||
+            'No transcript returned.';
+
+
+        document
+          .querySelector('#answer')
+          .textContent =
+            data.answer ||
+            'No answer returned.';
+
+
+        /*
+           Safe latency handling
+        */
+
+        const latencyData =
+          data.latency_ms ||
+          data.latencies ||
+          {};
+
+
+        document
+          .querySelector('#latency')
+          .textContent =
+            Object.entries(
+              latencyData
+            )
+            .map(
+              ([key, value]) =>
+                `${key}: ${value} ms`
+            )
+            .join('\n') ||
+            '--';
+
+
+        status.textContent =
+          data.is_grounded
+            ? 'grounded'
+            : 'refused';
+
+
+      } catch (error) {
+
+        console.error(
+          'Voice RAG error:',
+          error
+        );
+
+
+        status.textContent =
+          error.message ||
+          'request failed';
+
+
+        document
+          .querySelector('#transcript')
+          .textContent =
+            'Error processing voice request';
+
+
+        document
+          .querySelector('#answer')
+          .textContent =
+            error.message ||
+            'An error occurred during pipeline execution.';
+
+
+        document
+          .querySelector('#latency')
+          .textContent =
+            '--';
+
+      }
+
+    }
+
+
+    /* =====================================================
+       RECORDING
+       ===================================================== */
+
+    let recordingRate = 16000;
+
+
+    mic.onclick =
+      async () => {
+
+        /* ================================================
+           STOP RECORDING
+           ================================================ */
+
+        if (processor) {
+
+          recordingRate =
+            audioContext.sampleRate;
+
+
+          processor.disconnect();
+
+          source.disconnect();
+
+
+          stream
+            .getTracks()
+            .forEach(
+              track =>
+                track.stop()
+            );
+
+
+          await audioContext.close();
+
+
+          processor = null;
+
+
+          mic.classList.remove(
+            'recording'
+          );
+
+
+          await submit();
+
+
+          return;
+
+        }
+
+
+        /* ================================================
+           START RECORDING
+           ================================================ */
+
+        try {
+
+          stream =
+            await navigator
+              .mediaDevices
+              .getUserMedia(
+                {
+                  audio: {
+                    channelCount: 1,
+                    echoCancellation: true,
+                    noiseSuppression: true
+                  }
+                }
+              );
+
+
+          audioContext =
+            new AudioContext();
+
+
+          source =
+            audioContext
+              .createMediaStreamSource(
+                stream
+              );
+
+
+          processor =
+            audioContext
+              .createScriptProcessor(
+                4096,
+                1,
+                1
+              );
+
+
+          samples = [];
+
+
+          processor.onaudioprocess =
+            event => {
+
+              samples.push(
+                new Float32Array(
+                  event
+                    .inputBuffer
+                    .getChannelData(0)
+                )
+              );
+
+            };
+
+
+          source.connect(
+            processor
+          );
+
+
+          processor.connect(
+            audioContext.destination
+          );
+
+
+          mic.classList.add(
+            'recording'
+          );
+
+
+          status.textContent =
+            'recording';
+
+
+        } catch (error) {
+
+          console.error(
+            'Microphone error:',
+            error
+          );
+
+
+          status.textContent =
+            error.message ||
+            'microphone unavailable';
+
+        }
+
+      };
+
+  </script>
+
+</body>
+</html>
